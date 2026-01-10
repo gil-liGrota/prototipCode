@@ -1,16 +1,3 @@
-// Copyright 2021-2024 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// version 3 as published by the Free Software Foundation or
-// available in the root directory of this project.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-
 package frc.robot.subsystems.drive;
 
 import com.revrobotics.REVLibError;
@@ -23,12 +10,6 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.function.DoubleSupplier;
 
-/**
- * Provides an interface for asynchronously reading high-frequency measurements to a set of queues.
- *
- * <p>This version includes an overload for Spark signals, which checks for errors to ensure that
- * all measurements in the sample are valid.
- */
 public class OdometryThread {
   private final List<SparkBase> sparks = new ArrayList<>();
   private final List<DoubleSupplier> sparkSignals = new ArrayList<>();
@@ -60,13 +41,13 @@ public class OdometryThread {
   /** Registers a Spark signal to be read from the thread. */
   public Queue<Double> registerSignal(SparkBase spark, DoubleSupplier signal) {
     Queue<Double> queue = new ArrayBlockingQueue<>(20);
-    Drive.odometryLock.lock();
+    Swerve.odometryLock.lock();
     try {
       sparks.add(spark);
       sparkSignals.add(signal);
       sparkQueues.add(queue);
     } finally {
-      Drive.odometryLock.unlock();
+      Swerve.odometryLock.unlock();
     }
     return queue;
   }
@@ -74,12 +55,12 @@ public class OdometryThread {
   /** Registers a generic signal to be read from the thread. */
   public Queue<Double> registerSignal(DoubleSupplier signal) {
     Queue<Double> queue = new ArrayBlockingQueue<>(20);
-    Drive.odometryLock.lock();
+    Swerve.odometryLock.lock();
     try {
       genericSignals.add(signal);
       genericQueues.add(queue);
     } finally {
-      Drive.odometryLock.unlock();
+      Swerve.odometryLock.unlock();
     }
     return queue;
   }
@@ -87,18 +68,18 @@ public class OdometryThread {
   /** Returns a new queue that returns timestamp values for each sample. */
   public Queue<Double> makeTimestampQueue() {
     Queue<Double> queue = new ArrayBlockingQueue<>(20);
-    Drive.odometryLock.lock();
+    Swerve.odometryLock.lock();
     try {
       timestampQueues.add(queue);
     } finally {
-      Drive.odometryLock.unlock();
+      Swerve.odometryLock.unlock();
     }
     return queue;
   }
 
   private void run() {
     // Save new data to queues
-    Drive.odometryLock.lock();
+    Swerve.odometryLock.lock();
     try {
       // Get sample timestamp
       double timestamp = RobotController.getFPGATime() / 1e6;
@@ -126,7 +107,7 @@ public class OdometryThread {
         }
       }
     } finally {
-      Drive.odometryLock.unlock();
+      Swerve.odometryLock.unlock();
     }
   }
 }
