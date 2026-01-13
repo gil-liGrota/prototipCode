@@ -119,11 +119,11 @@ public class RobotContainer {
         private void configureButtonBindings() {
                 // Default command, normal field-relative drive
                 drive.setDefaultCommand(
-                                SwerveCommands.joystickDrive(
+                                SwerveCommands.joystickDriveRobotRelative(
                                                 drive,
-                                                () -> driverController.getLeftY() * 0.3,
-                                                () -> driverController.getLeftX() * 0.3,
-                                                () -> driverController.getRightX() * 0.3));
+                                                () -> driverController.getLeftY() * 0.6,
+                                                () -> driverController.getLeftX() * 0.6,
+                                                () -> driverController.getRightX() * 0.6));
                 driverController.y().onTrue(drive.resetGyroCommand());
         }
 
