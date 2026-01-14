@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
 import frc.robot.commands.SwerveCommands;
+import frc.robot.subsystems.FirstMotor.FIrstIOSpark;
+import frc.robot.subsystems.FirstMotor.First;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon;
 import frc.robot.subsystems.drive.GyroIOSim;
@@ -44,6 +46,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
         // Subsystems
         private final Swerve drive;
+        private First first;
 
         // Controller
         private final PomXboxController driverController = new PomXboxController(0);
@@ -60,6 +63,7 @@ public class RobotContainer {
                 switch (Constants.currentMode) {
                         case REAL:
                                 // Real robot, instantiate hardware IO implementations
+                                first = new First(new FIrstIOSpark());
                                 drive = new Swerve(
                                                 new GyroIOPigeon(),
                                                 new ModuleIOReal(0),
