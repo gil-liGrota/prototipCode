@@ -13,12 +13,20 @@
 
 package frc.robot;
 
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.POM_lib.Joysticks.PomXboxController;
+import frc.robot.commands.FirstMotorCommands;
 import frc.robot.commands.SwerveCommands;
+import frc.robot.subsystems.FirstMotor.FIrstIOSpark;
+import frc.robot.subsystems.FirstMotor.First;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon;
 import frc.robot.subsystems.drive.GyroIOSim;
@@ -26,11 +34,6 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOReal;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.Swerve;
-
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -44,6 +47,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
         // Subsystems
         private final Swerve drive;
+        private final First first;
 
         // Controller
         private final PomXboxController driverController = new PomXboxController(0);
@@ -66,6 +70,7 @@ public class RobotContainer {
                                                 new ModuleIOReal(1),
                                                 new ModuleIOReal(2),
                                                 new ModuleIOReal(3));
+                                first = new First(new FIrstIOSpark());
                                 break;
 
                         case SIM:
@@ -79,6 +84,7 @@ public class RobotContainer {
                                                 new ModuleIOSim(this.driveSimulation.getModules()[1]),
                                                 new ModuleIOSim(this.driveSimulation.getModules()[2]),
                                                 new ModuleIOSim(this.driveSimulation.getModules()[3]));
+                                first = null;
                                 break;
 
                         default:
@@ -94,6 +100,9 @@ public class RobotContainer {
                                                 },
                                                 new ModuleIO() {
                                                 });
+
+                                first = null;
+
                                 break;
                 }
 
@@ -125,6 +134,8 @@ public class RobotContainer {
                                                 () -> driverController.getLeftX() * 0.6,
                                                 () -> driverController.getRightX() * 0.6));
                 driverController.y().onTrue(drive.resetGyroCommand());
+
+                driverController.a().onTrue(FirstMotorCommands.setVoltage(first, 5.0));
         }
 
         public void displaSimFieldToAdvantageScope() {
