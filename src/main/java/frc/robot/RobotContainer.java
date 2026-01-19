@@ -47,7 +47,7 @@ import frc.robot.subsystems.drive.Swerve;
 public class RobotContainer {
         // Subsystems
         private final Swerve drive;
-        private final First first;
+        // private final First first;
 
         // Controller
         private final PomXboxController driverController = new PomXboxController(0);
@@ -70,7 +70,7 @@ public class RobotContainer {
                                                 new ModuleIOReal(1),
                                                 new ModuleIOReal(2),
                                                 new ModuleIOReal(3));
-                                first = new First(new FIrstIOSpark());
+                                // first = new First(new FIrstIOSpark());
                                 break;
 
                         case SIM:
@@ -84,7 +84,7 @@ public class RobotContainer {
                                                 new ModuleIOSim(this.driveSimulation.getModules()[1]),
                                                 new ModuleIOSim(this.driveSimulation.getModules()[2]),
                                                 new ModuleIOSim(this.driveSimulation.getModules()[3]));
-                                first = null;
+                                // first = null;
                                 break;
 
                         default:
@@ -101,7 +101,7 @@ public class RobotContainer {
                                                 new ModuleIO() {
                                                 });
 
-                                first = null;
+                                // first = null;
 
                                 break;
                 }
@@ -135,7 +135,13 @@ public class RobotContainer {
                                                 () -> driverController.getRightX() * 0.6));
                 driverController.y().onTrue(drive.resetGyroCommand());
 
-                driverController.a().onTrue(FirstMotorCommands.setVoltage(first, 5.0));
+                driverController.b().whileTrue(SwerveCommands.joystickDriveRobotRelative(
+                                drive,
+                                () -> 0.6,
+                                () -> 0.0,
+                                () -> 0.0));
+
+                // driverController.a().onTrue(FirstMotorCommands.setVoltage(first, 5.0));
         }
 
         public void displaSimFieldToAdvantageScope() {
