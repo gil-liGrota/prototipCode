@@ -8,6 +8,7 @@ public interface FirstIO {
     public static class FirstIOInputs {
         public double motorPosition = 0.0;
         public double motorVelocity = 0.0;
+        public boolean sensor = false;
     }
 
     public default void updateInputs(FirstIOInputs inputs) {
