@@ -141,6 +141,11 @@ public class RobotContainer {
                                 () -> 0.0,
                                 () -> 0.0));
 
+                driverController.x().whileTrue(SwerveCommands.joystickDriveRobotRelative(
+                                drive,
+                                () -> -0.6,
+                                () -> 0.0,
+                                () -> 0.0));
                 // driverController.a().onTrue(FirstMotorCommands.setVoltage(first, 5.0));
         }
 
